@@ -315,39 +315,38 @@
 
   /* Mobil – kortvisning */
   @media (max-width: 768px) {
-    .${cls} thead { display: none; }
-    .${cls},
-    .${cls} tbody,
-    .${cls} tr,
-    .${cls} td {
+    html body .${cls} thead { display: none; }
+    html body .${cls},
+    html body .${cls} tbody,
+    html body .${cls} tr,
+    html body .${cls} td {
       display: block;
       width: 100%;
       box-sizing: border-box;
     }
-    .${cls} tr {
+    html body .${cls} tr {
       margin-bottom: 20px;
       border: 2px solid #000;
     }
-    .${cls} td {
+    html body .${cls} td {
       padding: 10px 15px;
       border: none;
       border-bottom: 1px solid #eee;
       position: relative;
-      background-color: #fff !important;
+      background-color: #ffffff;
     }
-    .${cls} tr:nth-child(even) td { background-color: #f8f8f8 !important; }
-    .${cls} td:last-child { border-bottom: none; }
+    html body .${cls} tr:nth-child(even) td { background-color: #f8f8f8; }
+    html body .${cls} td:last-child { border-bottom: none; }
     /* Første celle = kortets titel */
-    .${cls} tr:nth-child(odd) td:nth-of-type(1),
-    .${cls} tr:nth-child(even) td:nth-of-type(1) {
-      background-color: #f9f9f9 !important;
+    html body .${cls} td:nth-of-type(1) {
+      background-color: #f9f9f9;
       font-weight: bold;
       font-size: 1em;
       color: #000;
       border-bottom: 2px solid #000;
     }
     /* Øvrige celler: vis kolonneoverskrift som label over værdien */
-    .${cls} td:nth-of-type(n+2)::before {
+    html body .${cls} td:nth-of-type(n+2)::before {
       display: block;
       font-weight: 700;
       color: #555;
@@ -358,9 +357,9 @@ ${mobileLabels}
   }
 </style>`;
 
-    const ths = C.map(c => `      <th>${e(c)}</th>`).join('\n');
+    const ths = C.map(c => `      <th scope="col">${e(c)}</th>`).join('\n');
     const trs = R.map(r =>
-      `    <tr>\n${r.map(c => `      <td>${e(c)}</td>`).join('\n')}\n    </tr>`
+      `    <tr>\n${r.map((c, i) => i === 0 ? `      <td scope="row">${e(c)}</td>` : `      <td>${e(c)}</td>`).join('\n')}\n    </tr>`
     ).join('\n');
 
     const tbl = `<table class="${cls}">
