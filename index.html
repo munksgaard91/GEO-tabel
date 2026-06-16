@@ -315,38 +315,33 @@
 
   /* Mobil – kortvisning */
   @media (max-width: 768px) {
-    html body .${cls} thead { display: none; }
-    html body .${cls},
-    html body .${cls} tbody,
-    html body .${cls} tr,
-    html body .${cls} td {
+    .${cls} thead { display: none; }
+    .${cls},
+    .${cls} tbody,
+    .${cls} tr,
+    .${cls} td {
       display: block;
       width: 100%;
       box-sizing: border-box;
     }
-    html body .${cls} tr {
+    .${cls} tr {
       margin-bottom: 20px;
       border: 2px solid #000;
     }
-    html body .${cls} td {
+    .${cls} td {
       padding: 10px 15px;
       border: none;
       border-bottom: 1px solid #eee;
       position: relative;
-      background-color: #ffffff;
     }
-    html body .${cls} tr:nth-child(even) td { background-color: #f8f8f8; }
-    html body .${cls} td:last-child { border-bottom: none; }
-    /* Første celle = kortets titel */
-    html body .${cls} td:nth-of-type(1) {
-      background-color: #f9f9f9;
+    .${cls} td:last-child { border-bottom: none; }
+    .${cls} td:nth-of-type(1) {
+      background-color: #f9f9f9 !important;
       font-weight: bold;
-      font-size: 1em;
       color: #000;
       border-bottom: 2px solid #000;
     }
-    /* Øvrige celler: vis kolonneoverskrift som label over værdien */
-    html body .${cls} td:nth-of-type(n+2)::before {
+    .${cls} td:nth-of-type(n+2)::before {
       display: block;
       font-weight: 700;
       color: #555;
