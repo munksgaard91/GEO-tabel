@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tabel → HTML</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzIyNTU4MSIvPjx0ZXh0IHg9IjE2IiB5PSIyMyIgZm9udC1mYW1pbHk9InN5c3RlbS11aSwtYXBwbGUtc3lzdGVtLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmI8L3RleHQ+PC9zdmc+" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bo: #225581;
+      --bo-dk: #1a4268;
+      --bo-bg: #eef3f8;
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 560px;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 18px;
+      background: var(--bo);
+    }
+    .logo {
+      width: 28px; height: 28px;
+      background: #fff;
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800;
+      color: var(--bo);
+      flex-shrink: 0;
+    }
+    .topbar span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 11px 13px;
+      font-size: 13px;
+      font-family: monospace;
+      border: 1.5px solid var(--bo-bg);
+      border-radius: var(--radius-sm);
+      background: var(--bo-bg);
+      color: #111;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    textarea:focus {
+      border-color: var(--bo);
+      background: #fff;
+    }
+
+    .btn-convert {
+      width: 100%;
+      padding: 11px;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--bo);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .btn-convert:hover { background: var(--bo-dk); }
+
+    .status {
+      font-size: 12px;
+      padding: 7px 11px;
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+    .status.err {
+      display: block;
+      background: #fde8e8;
+      color: #a12323;
+      border: 0.5px solid #f5c0c0;
+    }
+
+    .output-section {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .output-section.visible { display: flex; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #eee;
+    }
+
+    .output-box {
+      background: #f7f8fa;
+      border: 1px solid #e4e8ee;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #333;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 220px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    .btn-copy {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      background: var(--bo);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.15s;
+    }
+    .btn-copy:hover { background: var(--bo-dk); }
+    .btn-copy.ok { background: #1a6b3c; }
+
+    details summary {
+      font-size: 12px;
+      color: #888;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      user-select: none;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details[open] summary .chevron { transform: rotate(180deg); }
+    .chevron { transition: transform 0.2s; display: inline-block; }
+
+    .s-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .s-row label {
+      font-size: 12px;
+      color: #666;
+      white-space: nowrap;
+    }
+    .s-row input[type="text"] {
+      flex: 1;
+      padding: 6px 9px;
+      font-size: 12px;
+      font-family: inherit;
+      border: 1px solid #ddd;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: #111;
+      outline: none;
+    }
+    .s-row input[type="text"]:focus { border-color: var(--bo); }
+
+    .s-toggle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 8px;
+    }
+    .s-toggle label {
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+    }
+    .s-toggle input { accent-color: var(--bo); cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="topbar">
+    <div class="logo">b</div>
+    <span>Tabel → HTML</span>
+  </div>
+
+  <div class="body">
+    <textarea id="paste" placeholder="Paste tabel fra Google Docs…"></textarea>
+
+    <button class="btn-convert" onclick="run()">
+      <i class="ti ti-table-import"></i>
+      Konvertér
+    </button>
+
+    <div class="status" id="status"></div>
+
+    <div class="output-section" id="out">
+      <div class="divider"></div>
+      <div class="output-box" id="code"></div>
+      <button class="btn-copy" id="copybtn" onclick="doCopy()">
+        <i class="ti ti-copy"></i>
+        Kopiér HTML-kode
+      </button>
+
+      <details>
+        <summary>
+          <i class="ti ti-settings"></i>
+          Indstillinger
+          <span class="chevron"><i class="ti ti-chevron-down" style="font-size:12px;"></i></span>
+        </summary>
+        <div class="s-row">
+          <label>Class-navn</label>
+          <input type="text" id="cls" value="service-tabel" oninput="gen()" />
+        </div>
+        <div class="s-toggle">
+          <input type="checkbox" id="incss" checked onchange="gen()" />
+          <label for="incss">Inkluder &lt;style&gt; i output</label>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+  let C = [], R = [];
+
+  function run() {
+    const raw = document.getElementById('paste').value;
+    const st = document.getElementById('status');
+    st.className = 'status';
+
+    if (!raw.trim()) {
+      st.className = 'status err';
+      st.textContent = 'Intet indhold – paste tabellen fra Google Docs.';
+      return;
+    }
+
+    const lines = raw.trim().split(/\r?\n/).filter(l => l.trim());
+    const parsed = lines.map(l => l.split('\t'));
+    const mc = Math.max(...parsed.map(r => r.length));
+
+    if (mc < 2) {
+      st.className = 'status err';
+      st.textContent = 'Ingen tabulator-kolonner fundet. Kopiér direkte fra tabellen i Google Docs.';
+      return;
+    }
+
+    const norm = parsed.map(r => {
+      while (r.length < mc) r.push('');
+      return r.map(c => c.trim());
+    });
+
+    C = norm[0];
+    R = norm.slice(1);
+
+    gen();
+    document.getElementById('out').classList.add('visible');
+    resetBtn();
+  }
+
+  function gen() {
+    if (!C.length) return;
+    const cls = document.getElementById('cls').value || 'service-tabel';
+    const inc = document.getElementById('incss').checked;
+
+    const ml = C.slice(1).map((c, i) =>
+      `    .${cls} td:nth-of-type(${i + 2})::before { content: "${c.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"; }`
+    ).join('\n');
+
+    const css = `<style>
+  .${cls} { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: var(--text-m); color: #000; }
+  .${cls} th, .${cls} td { border: 1px solid #000; padding: 12px; text-align: left; vertical-align: top; }
+  .${cls} thead th { font-weight: 700; background-color: #fff; }
+  .${cls} a { color: #000; text-decoration: underline; font-weight: bold; }
+  .${cls} a:hover { text-decoration: none; }
+  @media (max-width: 768px) {
+    .${cls} thead { display: none; }
+    .${cls}, .${cls} tbody, .${cls} tr, .${cls} td { display: block; width: 100%; box-sizing: border-box; }
+    .${cls} tr { margin-bottom: 20px; border: 2px solid #000; background-color: #fff; }
+    .${cls} td { padding: 10px 15px; border: none; border-bottom: 1px solid #eee; position: relative; padding-left: 45%; text-align: right; }
+    .${cls} td:last-child { border-bottom: none; }
+    .${cls} td::before { position: absolute; left: 15px; width: 40%; white-space: normal; text-align: left; font-weight: 700; color: #555; }
+    .${cls} td:nth-of-type(1) { background-color: #f9f9f9; text-align: left; padding-left: 15px; font-weight: bold; color: #000; border-bottom: 2px solid #000; }
+${ml}
+  }
+</style>`;
+
+    const ths = C.map(c => `      <th>${e(c)}</th>`).join('\n');
+    const trs = R.map(r =>
+      `    <tr>\n${r.map(c => `      <td>${e(c)}</td>`).join('\n')}\n    </tr>`
+    ).join('\n');
+
+    const tbl = `<table class="${cls}">
+  <thead>
+    <tr>
+${ths}
+    </tr>
+  </thead>
+  <tbody>
+${trs}
+  </tbody>
+</table>`;
+
+    document.getElementById('code').textContent = inc ? css + '\n' + tbl : tbl;
+  }
+
+  function e(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function doCopy() {
+    navigator.clipboard.writeText(document.getElementById('code').textContent).then(() => {
+      const b = document.getElementById('copybtn');
+      b.classList.add('ok');
+      b.innerHTML = '<i class="ti ti-check"></i> Kopieret!';
+      setTimeout(resetBtn, 2500);
+    });
+  }
+
+  function resetBtn() {
+    const b = document.getElementById('copybtn');
+    b.classList.remove('ok');
+    b.innerHTML = '<i class="ti ti-copy"></i> Kopiér HTML-kode';
+  }
+</script>
+
+</body>
+</html>
