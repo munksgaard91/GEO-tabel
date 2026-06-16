@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tabel → HTML</title>
+  <title>GEO-tabel</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzIyNTU4MSIvPjx0ZXh0IHg9IjE2IiB5PSIyMyIgZm9udC1mYW1pbHk9InN5c3RlbS11aSwtYXBwbGUtc3lzdGVtLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZvbnQtd2VpZ2h0PSI4MDAiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmI8L3RleHQ+PC9zdmc+" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css" />
   <style>
@@ -84,6 +84,30 @@
       background: #fff;
     }
 
+    .cls-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cls-row label {
+      font-size: 12px;
+      color: #888;
+      white-space: nowrap;
+    }
+    .cls-row input {
+      flex: 1;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-family: monospace;
+      border: 1px solid #ddd;
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: #111;
+      outline: none;
+    }
+    .cls-row input:focus { border-color: var(--bo); }
+    .cls-row input.invalid { border-color: #c0392b; background: #fdf0ef; }
+
     .btn-convert {
       width: 100%;
       padding: 11px;
@@ -123,10 +147,7 @@
     }
     .output-section.visible { display: flex; }
 
-    .divider {
-      border: none;
-      border-top: 1px solid #eee;
-    }
+    .divider { border: none; border-top: 1px solid #eee; }
 
     .output-box {
       background: #f7f8fa;
@@ -141,6 +162,7 @@
       max-height: 220px;
       overflow-y: auto;
       line-height: 1.6;
+      user-select: all;
     }
 
     .btn-copy {
@@ -162,57 +184,6 @@
     }
     .btn-copy:hover { background: var(--bo-dk); }
     .btn-copy.ok { background: #1a6b3c; }
-
-    details summary {
-      font-size: 12px;
-      color: #888;
-      cursor: pointer;
-      list-style: none;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      user-select: none;
-    }
-    details summary::-webkit-details-marker { display: none; }
-    details[open] summary .chevron { transform: rotate(180deg); }
-    .chevron { transition: transform 0.2s; display: inline-block; }
-
-    .s-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-top: 12px;
-    }
-    .s-row label {
-      font-size: 12px;
-      color: #666;
-      white-space: nowrap;
-    }
-    .s-row input[type="text"] {
-      flex: 1;
-      padding: 6px 9px;
-      font-size: 12px;
-      font-family: inherit;
-      border: 1px solid #ddd;
-      border-radius: var(--radius-sm);
-      background: #fff;
-      color: #111;
-      outline: none;
-    }
-    .s-row input[type="text"]:focus { border-color: var(--bo); }
-
-    .s-toggle {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      margin-top: 8px;
-    }
-    .s-toggle label {
-      font-size: 12px;
-      color: #666;
-      cursor: pointer;
-    }
-    .s-toggle input { accent-color: var(--bo); cursor: pointer; }
   </style>
 </head>
 <body>
@@ -220,11 +191,16 @@
 <div class="card">
   <div class="topbar">
     <div class="logo">b</div>
-    <span>Tabel → HTML</span>
+    <span>GEO-tabel → HTML</span>
   </div>
 
   <div class="body">
     <textarea id="paste" placeholder="Paste tabel fra Google Docs…"></textarea>
+
+    <div class="cls-row">
+      <label>Class-navn</label>
+      <input type="text" id="cls" value="geo-tabel" oninput="sanitizeCls(this)" />
+    </div>
 
     <button class="btn-convert" onclick="run()">
       <i class="ti ti-table-import"></i>
@@ -240,28 +216,25 @@
         <i class="ti ti-copy"></i>
         Kopiér HTML-kode
       </button>
-
-      <details>
-        <summary>
-          <i class="ti ti-settings"></i>
-          Indstillinger
-          <span class="chevron"><i class="ti ti-chevron-down" style="font-size:12px;"></i></span>
-        </summary>
-        <div class="s-row">
-          <label>Class-navn</label>
-          <input type="text" id="cls" value="service-tabel" oninput="gen()" />
-        </div>
-        <div class="s-toggle">
-          <input type="checkbox" id="incss" checked onchange="gen()" />
-          <label for="incss">Inkluder &lt;style&gt; i output</label>
-        </div>
-      </details>
     </div>
   </div>
 </div>
 
 <script>
   let C = [], R = [];
+
+  // Sanitize class name: only allow CSS-safe characters
+  function sanitizeCls(input) {
+    const val = input.value;
+    const safe = /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(val);
+    input.classList.toggle('invalid', val.length > 0 && !safe);
+  }
+
+  function getcls() {
+    const raw = document.getElementById('cls').value.trim();
+    // Replace spaces and invalid chars with hyphens, ensure valid start
+    return raw.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_-]/g, '-').replace(/^-+/, '') || 'geo-tabel';
+  }
 
   function run() {
     const raw = document.getElementById('paste').value;
@@ -286,7 +259,8 @@
 
     const norm = parsed.map(r => {
       while (r.length < mc) r.push('');
-      return r.map(c => c.trim());
+      // Normalize cell: collapse internal newlines to a space
+      return r.map(c => c.replace(/\r?\n/g, ' ').trim());
     });
 
     C = norm[0];
@@ -299,28 +273,66 @@
 
   function gen() {
     if (!C.length) return;
-    const cls = document.getElementById('cls').value || 'service-tabel';
-    const inc = document.getElementById('incss').checked;
+    const cls = getcls();
 
-    const ml = C.slice(1).map((c, i) =>
-      `    .${cls} td:nth-of-type(${i + 2})::before { content: "${c.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"; }`
+    const mobileLabels = C.map((c, i) =>
+      `    .${cls} td:nth-of-type(${i + 1})::before { content: "${c.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"; }`
     ).join('\n');
 
     const css = `<style>
-  .${cls} { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: var(--text-m); color: #000; }
-  .${cls} th, .${cls} td { border: 1px solid #000; padding: 12px; text-align: left; vertical-align: top; }
-  .${cls} thead th { font-weight: 700; background-color: #fff; }
+  /* Desktop */
+  .${cls} {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: var(--text-m);
+    color: #000;
+  }
+  .${cls} th,
+  .${cls} td {
+    border: 1px solid #000;
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .${cls} thead th {
+    font-weight: 700;
+    background-color: #fff;
+  }
   .${cls} a { color: #000; text-decoration: underline; font-weight: bold; }
   .${cls} a:hover { text-decoration: none; }
+
+  /* Mobil – kortvisning */
   @media (max-width: 768px) {
     .${cls} thead { display: none; }
-    .${cls}, .${cls} tbody, .${cls} tr, .${cls} td { display: block; width: 100%; box-sizing: border-box; }
-    .${cls} tr { margin-bottom: 20px; border: 2px solid #000; background-color: #fff; }
-    .${cls} td { padding: 10px 15px; border: none; border-bottom: 1px solid #eee; position: relative; padding-left: 45%; text-align: right; }
+    .${cls},
+    .${cls} tbody,
+    .${cls} tr,
+    .${cls} td {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .${cls} tr {
+      margin-bottom: 20px;
+      border: 2px solid #000;
+      background-color: #fff;
+    }
+    .${cls} td {
+      padding: 10px 15px;
+      border: none;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
     .${cls} td:last-child { border-bottom: none; }
-    .${cls} td::before { position: absolute; left: 15px; width: 40%; white-space: normal; text-align: left; font-weight: 700; color: #555; }
-    .${cls} td:nth-of-type(1) { background-color: #f9f9f9; text-align: left; padding-left: 15px; font-weight: bold; color: #000; border-bottom: 2px solid #000; }
-${ml}
+    .${cls} td::before {
+      display: block;
+      font-weight: 700;
+      color: #555;
+      font-size: 0.85em;
+      margin-bottom: 3px;
+    }
+${mobileLabels}
   }
 </style>`;
 
@@ -340,20 +352,49 @@ ${trs}
   </tbody>
 </table>`;
 
-    document.getElementById('code').textContent = inc ? css + '\n' + tbl : tbl;
+    document.getElementById('code').textContent = css + '\n' + tbl;
   }
 
   function e(s) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   function doCopy() {
-    navigator.clipboard.writeText(document.getElementById('code').textContent).then(() => {
-      const b = document.getElementById('copybtn');
-      b.classList.add('ok');
-      b.innerHTML = '<i class="ti ti-check"></i> Kopieret!';
-      setTimeout(resetBtn, 2500);
-    });
+    const text = document.getElementById('code').textContent;
+    const b = document.getElementById('copybtn');
+
+    // Primary: clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showCopied(b);
+      }).catch(() => {
+        fallbackCopy(b);
+      });
+    } else {
+      fallbackCopy(b);
+    }
+  }
+
+  // Fallback: select text in the output box so user can Ctrl+C
+  function fallbackCopy(b) {
+    const box = document.getElementById('code');
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(box);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    b.innerHTML = '<i class="ti ti-hand-finger"></i> Markeret – tryk Ctrl+C';
+    b.classList.add('ok');
+    setTimeout(resetBtn, 3000);
+  }
+
+  function showCopied(b) {
+    b.classList.add('ok');
+    b.innerHTML = '<i class="ti ti-check"></i> Kopieret!';
+    setTimeout(resetBtn, 2500);
   }
 
   function resetBtn() {
