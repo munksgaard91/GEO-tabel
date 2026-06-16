@@ -67,7 +67,7 @@
 
     textarea {
       width: 100%;
-      min-height: 120px;
+      min-height: 200px;
       padding: 11px 13px;
       font-size: 13px;
       font-family: monospace;
@@ -266,6 +266,13 @@
     C = norm[0];
     R = norm.slice(1);
 
+    // Warn if header row appears to be empty
+    if (C.every(c => c === '')) {
+      st.className = 'status err';
+      st.textContent = 'Første række ser ud til at være tom – sørg for at kolonneoverskrifterne er med når du kopierer.';
+      return;
+    }
+
     gen();
     document.getElementById('out').classList.add('visible');
     resetBtn();
@@ -298,8 +305,11 @@
   }
   .${cls} thead th {
     font-weight: 700;
-    background-color: #fff;
+    background-color: #2a2a2a;
+    color: #fff;
   }
+  .${cls} tbody tr:nth-child(odd) td { background-color: #ffffff; }
+  .${cls} tbody tr:nth-child(even) td { background-color: #f8f8f8; }
   .${cls} a { color: #000; text-decoration: underline; font-weight: bold; }
   .${cls} a:hover { text-decoration: none; }
 
