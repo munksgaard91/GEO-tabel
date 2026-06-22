@@ -22,14 +22,22 @@
       background: #f0f4f8;
       min-height: 100vh;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: 24px 16px;
     }
 
-    .card {
+    .layout {
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 20px;
       width: 100%;
-      max-width: 560px;
+      max-width: 1200px;
+      align-items: start;
+    }
+
+    /* ── Left panel: tool ── */
+    .card {
       background: #fff;
       border-radius: var(--radius);
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
@@ -37,193 +45,176 @@
     }
 
     .topbar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 13px 18px;
-      background: var(--bo);
+      display: flex; align-items: center; gap: 10px;
+      padding: 13px 18px; background: var(--bo);
     }
     .logo {
-      width: 28px; height: 28px;
-      background: #fff;
-      border-radius: 5px;
+      width: 28px; height: 28px; background: #fff; border-radius: 5px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 800;
-      color: var(--bo);
-      flex-shrink: 0;
+      font-size: 15px; font-weight: 800; color: var(--bo); flex-shrink: 0;
     }
-    .topbar span {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-    }
+    .topbar span { font-size: 13px; font-weight: 600; color: #fff; }
 
-    .body {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
 
-    textarea {
-      width: 100%;
-      min-height: 200px;
-      padding: 11px 13px;
-      font-size: 13px;
-      font-family: monospace;
-      border: 1.5px solid var(--bo-bg);
-      border-radius: var(--radius-sm);
-      background: var(--bo-bg);
-      color: #111;
-      resize: vertical;
-      outline: none;
+    .paste-area {
+      width: 100%; min-height: 200px; padding: 11px 13px;
+      font-size: 13px; font-family: monospace;
+      border: 1.5px solid var(--bo-bg); border-radius: var(--radius-sm);
+      background: var(--bo-bg); color: #111; outline: none;
       transition: border-color 0.15s, background 0.15s;
+      overflow-y: auto; white-space: pre-wrap; word-break: break-word; cursor: text;
     }
-    textarea:focus {
-      border-color: var(--bo);
-      background: #fff;
-    }
+    .paste-area:focus { border-color: var(--bo); background: #fff; }
+    .paste-area:empty::before { content: attr(data-placeholder); color: #aaa; pointer-events: none; }
 
-    .cls-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .cls-row label {
-      font-size: 12px;
-      color: #888;
-      white-space: nowrap;
-    }
+    .cls-row { display: flex; align-items: center; gap: 8px; }
+    .cls-row label { font-size: 12px; color: #888; white-space: nowrap; }
     .cls-row input {
-      flex: 1;
-      padding: 7px 10px;
-      font-size: 12px;
-      font-family: monospace;
-      border: 1px solid #ddd;
-      border-radius: var(--radius-sm);
-      background: #fff;
-      color: #111;
-      outline: none;
+      flex: 1; padding: 7px 10px; font-size: 12px; font-family: monospace;
+      border: 1px solid #ddd; border-radius: var(--radius-sm);
+      background: #fff; color: #111; outline: none;
     }
     .cls-row input:focus { border-color: var(--bo); }
     .cls-row input.invalid { border-color: #c0392b; background: #fdf0ef; }
 
     .btn-convert {
-      width: 100%;
-      padding: 11px;
-      font-size: 14px;
-      font-weight: 600;
-      background: var(--bo);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      width: 100%; padding: 11px; font-size: 14px; font-weight: 600;
+      background: var(--bo); color: #fff; border: none;
+      border-radius: var(--radius-sm); cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: background 0.15s;
     }
     .btn-convert:hover { background: var(--bo-dk); }
 
-    .status {
-      font-size: 12px;
-      padding: 7px 11px;
-      border-radius: var(--radius-sm);
-      display: none;
-    }
-    .status.err {
-      display: block;
-      background: #fde8e8;
-      color: #a12323;
-      border: 0.5px solid #f5c0c0;
-    }
-
-    .output-section {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .output-section.visible { display: flex; }
+    .status { font-size: 12px; padding: 7px 11px; border-radius: var(--radius-sm); display: none; }
+    .status.err { display: block; background: #fde8e8; color: #a12323; border: 0.5px solid #f5c0c0; }
 
     .divider { border: none; border-top: 1px solid #eee; }
-
-    .output-box {
-      background: #f7f8fa;
-      border: 1px solid #e4e8ee;
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      font-family: monospace;
-      font-size: 11px;
-      color: #333;
-      white-space: pre-wrap;
-      word-break: break-all;
-      max-height: 220px;
-      overflow-y: auto;
-      line-height: 1.6;
-      user-select: all;
-    }
+    .copy-section-hidden { display: none; }
 
     .btn-copy {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: 700;
-      background: var(--bo);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      width: 100%; padding: 14px; font-size: 16px; font-weight: 700;
+      background: var(--bo); color: #fff; border: none;
+      border-radius: var(--radius-sm); cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
       transition: background 0.15s;
     }
     .btn-copy:hover { background: var(--bo-dk); }
     .btn-copy.ok { background: #1a6b3c; }
+
+    /* ── Right panel: preview ── */
+    .preview-panel {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .preview-topbar {
+      padding: 13px 18px; background: #f7f8fa;
+      border-bottom: 1px solid #eee;
+      font-size: 12px; font-weight: 600; color: #888;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    .preview-content {
+      padding: 20px;
+      min-height: 500px;
+    }
+
+    /* Placeholder skeleton */
+    .preview-placeholder { display: flex; flex-direction: column; gap: 8px; }
+    .ph-row { display: flex; gap: 6px; }
+    .ph-cell {
+      flex: 1; height: 32px; border-radius: 4px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    .ph-cell.header { background: linear-gradient(90deg, #d8d8d8 25%, #cccccc 50%, #d8d8d8 75%); background-size: 200% 100%; height: 38px; }
+    .ph-cell.tall { height: 56px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-<div class="card">
-  <div class="topbar">
-    <div class="logo">b</div>
-    <span>GEO-tabel → HTML</span>
+<div class="layout">
+  <!-- Left: tool -->
+  <div class="card">
+    <div class="topbar">
+      <div class="logo">b</div>
+      <span>GEO-tabel → HTML</span>
+    </div>
+    <div class="body">
+      <div id="paste" class="paste-area" contenteditable="true" data-placeholder="Paste tabel fra Google Docs…"></div>
+
+      <div class="cls-row">
+        <label>Class-navn</label>
+        <input type="text" id="cls" value="geo-tabel" oninput="sanitizeCls(this)" />
+      </div>
+
+      <div style="display:flex;gap:8px;">
+        <button class="btn-convert" onclick="run()" style="flex:1;">
+          <i class="ti ti-table-import"></i>
+          Konvertér
+        </button>
+        <button class="btn-convert" onclick="clearAll()" style="flex:0 0 auto;width:44px;background:transparent;border:1px solid #ccc;color:#666;" title="Ryd">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+
+      <div class="status" id="status"></div>
+
+      <div id="copy-section" class="copy-section-hidden" style="flex-direction:column;gap:10px;">
+        <div class="divider"></div>
+        <button class="btn-copy" id="copybtn" onclick="doCopy()">
+          <i class="ti ti-copy"></i>
+          Kopiér HTML-kode
+        </button>
+      </div>
+    </div>
   </div>
 
-  <div class="body">
-    <textarea id="paste" placeholder="Paste tabel fra Google Docs…"></textarea>
-
-    <div class="cls-row">
-      <label>Class-navn</label>
-      <input type="text" id="cls" value="geo-tabel" oninput="sanitizeCls(this)" />
-    </div>
-
-    <button class="btn-convert" onclick="run()">
-      <i class="ti ti-table-import"></i>
-      Konvertér
-    </button>
-
-    <div class="status" id="status"></div>
-
-    <div class="output-section" id="out">
-      <div class="divider"></div>
-      <div class="output-box" id="code"></div>
-      <button class="btn-copy" id="copybtn" onclick="doCopy()">
-        <i class="ti ti-copy"></i>
-        Kopiér HTML-kode
-      </button>
+  <!-- Right: preview -->
+  <div class="preview-panel">
+    <div class="preview-topbar">Forhåndsvisning</div>
+    <div class="preview-content" id="preview-content">
+      <div class="preview-placeholder">
+        <div class="ph-row"><div class="ph-cell header"></div><div class="ph-cell header"></div><div class="ph-cell header"></div></div>
+        <div class="ph-row"><div class="ph-cell"></div><div class="ph-cell tall"></div><div class="ph-cell tall"></div></div>
+        <div class="ph-row"><div class="ph-cell"></div><div class="ph-cell tall"></div><div class="ph-cell tall"></div></div>
+        <div class="ph-row"><div class="ph-cell"></div><div class="ph-cell tall"></div><div class="ph-cell tall"></div></div>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- Hidden output for copy -->
+<div id="code" style="display:none;"></div>
+
 <script>
   let C = [], R = [];
 
-  // Sanitize class name: only allow CSS-safe characters
+  function clearAll() {
+    document.getElementById('paste').innerHTML = '';
+    document.getElementById('status').className = 'status';
+    document.getElementById('copy-section').classList.add('copy-section-hidden');
+    document.getElementById('preview-content').innerHTML = `<div class="preview-placeholder">
+      <div class="ph-row"><div class="ph-cell header"></div><div class="ph-cell header"></div><div class="ph-cell header"></div></div>
+      <div class="ph-row"><div class="ph-cell"></div><div class="ph-cell tall"></div><div class="ph-cell tall"></div></div>
+      <div class="ph-row"><div class="ph-cell"></div><div class="ph-cell tall"></div><div class="ph-cell tall"></div></div>
+      <div class="ph-row"><div class="ph-cell"></div><div class="ph-cell tall"></div><div class="ph-cell tall"></div></div>
+    </div>`;
+    C = []; R = [];
+    resetBtn();
+  }
+
   function sanitizeCls(input) {
     const val = input.value;
     const safe = /^[a-zA-Z_-][a-zA-Z0-9_-]*$/.test(val);
@@ -232,69 +223,165 @@
 
   function getcls() {
     const raw = document.getElementById('cls').value.trim();
-    // Replace spaces and invalid chars with hyphens, ensure valid start
     return raw.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_-]/g, '-').replace(/^-+/, '') || 'geo-tabel';
   }
 
+  function extractLiText(li) {
+    let buf = '';
+    function w(n) {
+      if (n.nodeType === Node.TEXT_NODE) { buf += n.textContent; return; }
+      if (n.nodeType !== Node.ELEMENT_NODE) return;
+      const t = n.tagName.toLowerCase();
+      if (t === 'a') { const href = n.getAttribute('href') || ''; buf += href ? `[${n.textContent.trim()}](${href})` : n.textContent.trim(); return; }
+      if (t === 'br') { buf += ' '; return; }
+      n.childNodes.forEach(w);
+    }
+    li.childNodes.forEach(w);
+    return buf.trim();
+  }
+
+  function extractCellContent(cell) {
+    const segments = [];
+    let buf = '';
+    function flush() { const t = buf.trim(); if (t) segments.push({ type: 'text', value: t }); buf = ''; }
+    function walk(node, inList) {
+      if (node.nodeType === Node.TEXT_NODE) { buf += node.textContent; return; }
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      const tag = node.tagName.toLowerCase();
+      if (tag === 'a') {
+        const href = node.getAttribute('href') || '';
+        const label = node.textContent.trim();
+        buf += href ? `[${label}](${href})` : label;
+        return;
+      }
+      if (tag === 'br') { buf += ' '; return; }
+      if (tag === 'li') {
+        flush();
+        segments.push({ type: 'bullet', value: extractLiText(node) });
+        return;
+      }
+      if (tag === 'ul' || tag === 'ol') { flush(); node.childNodes.forEach(c => walk(c, true)); return; }
+      if (['p', 'div', 'span'].includes(tag)) {
+        node.childNodes.forEach(c => walk(c, inList));
+        if (['p', 'div'].includes(tag)) buf += ' ';
+        return;
+      }
+      node.childNodes.forEach(c => walk(c, inList));
+    }
+    cell.childNodes.forEach(n => walk(n, false));
+    flush();
+    return segments;
+  }
+
   function run() {
-    const raw = document.getElementById('paste').value;
+    const pasteEl = document.getElementById('paste');
     const st = document.getElementById('status');
     st.className = 'status';
+    const table = pasteEl.querySelector('table');
+    if (table) { parseFromTable(table, st); return; }
+    parseFromText(pasteEl, st);
+  }
 
-    if (!raw.trim()) {
-      st.className = 'status err';
-      st.textContent = 'Intet indhold – paste tabellen fra Google Docs.';
-      return;
-    }
-
-    const lines = raw.trim().split(/\r?\n/).filter(l => l.trim());
-    const parsed = lines.map(l => l.split('\t'));
+  function parseFromTable(table, st) {
+    const rows = Array.from(table.querySelectorAll('tr'));
+    if (rows.length < 2) { st.className = 'status err'; st.textContent = 'Tabellen ser ud til at være tom.'; return; }
+    const parsed = rows.map(tr => Array.from(tr.querySelectorAll('td, th')).map(td => extractCellContent(td)));
     const mc = Math.max(...parsed.map(r => r.length));
-
-    if (mc < 2) {
-      st.className = 'status err';
-      st.textContent = 'Ingen tabulator-kolonner fundet. Kopiér direkte fra tabellen i Google Docs.';
-      return;
-    }
-
-    const norm = parsed.map(r => {
-      while (r.length < mc) r.push('');
-      // Normalize cell: collapse internal newlines to a space
-      return r.map(c => c.replace(/\r?\n/g, ' ').trim());
-    });
-
-    C = norm[0];
-    R = norm.slice(1);
-
-    // Warn if header row appears to be empty
-    if (C.every(c => c === '')) {
-      st.className = 'status err';
-      st.textContent = 'Første række ser ud til at være tom – sørg for at kolonneoverskrifterne er med når du kopierer.';
-      return;
-    }
-
-    gen();
-    document.getElementById('out').classList.add('visible');
+    C = parsed[0].map(segs => segs.map(s => s.value).join(' ').trim());
+    R = parsed.slice(1).map(row => { while (row.length < mc) row.push([]); return row; });
+    if (C.every(c => c === '')) { st.className = 'status err'; st.textContent = 'Første række ser ud til at være tom.'; return; }
+    R = R.map(row => row.map(segs => splitBulletsInSegs(segs)));
+    genFromSegments();
+    document.getElementById('copy-section').classList.remove('copy-section-hidden');
     resetBtn();
   }
 
-  function gen() {
-    if (!C.length) return;
-    const cls = getcls();
+  function splitBulletsInSegs(segs) {
+    const bulletRe = /^[•\-\*]\s*/;
+    const result = [];
+    for (const seg of segs) {
+      if (seg.type === 'bullet') { result.push(seg); continue; }
+      const lines = seg.value.split(/(?=\s*[•])/);
+      if (lines.length <= 1 || !lines.some(l => bulletRe.test(l.trim()))) { result.push(seg); continue; }
+      for (const line of lines) {
+        const t = line.trim();
+        if (!t) continue;
+        if (bulletRe.test(t)) result.push({ type: 'bullet', value: t.replace(bulletRe, '').trim() });
+        else result.push({ type: 'text', value: t });
+      }
+    }
+    return result;
+  }
 
-    // Labels for columns 2+ (index 1 onward) – shown above each value on mobile
+  function parseFromText(pasteEl, st) {
+    let raw = '';
+    function walk(node) {
+      if (node.nodeType === Node.TEXT_NODE) { raw += node.textContent; return; }
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      const tag = node.tagName.toLowerCase();
+      if (tag === 'br') { raw += '\n'; return; }
+      if (tag === 'a') { const href = node.getAttribute('href') || ''; raw += href ? `[${node.textContent.trim()}](${href})` : node.textContent.trim(); return; }
+      if (['div','p','li','tr'].includes(tag) && raw && !raw.endsWith('\n')) raw += '\n';
+      if (tag === 'td' || tag === 'th') { if (raw && !raw.endsWith('\t') && !raw.endsWith('\n')) raw += '\t'; }
+      node.childNodes.forEach(walk);
+      if (['div','p'].includes(tag) && !raw.endsWith('\n')) raw += '\n';
+    }
+    pasteEl.childNodes.forEach(walk);
+    raw = raw.trim();
+    if (!raw) { st.className = 'status err'; st.textContent = 'Intet indhold – paste tabellen fra Google Docs.'; return; }
+    const lines = raw.split(/\r?\n/);
+    const BULLET = /^[•\-\*]\s/;
+    const firstTabLine = lines.find(l => l.includes('\t')) || lines[0];
+    const mc = (firstTabLine.match(/\t/g) || []).length + 1;
+    if (mc < 2) { st.className = 'status err'; st.textContent = 'Ingen tabulator-kolonner fundet. Kopiér direkte fra tabellen i Google Docs.'; return; }
+    const parsed = [];
+    let curRow = null, curCol = 0;
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const parts = line.split('\t');
+      const firstSeg = parts[0].trim();
+      const isBullet = BULLET.test(firstSeg);
+      const hasTabs = parts.length > 1;
+      if (curRow === null || (!isBullet && hasTabs)) {
+        if (curRow !== null) parsed.push(curRow);
+        curRow = Array(mc).fill('');
+        curCol = 0;
+        parts.forEach((p, i) => { if (i < mc) curRow[i] = p.trim(); });
+        curCol = Math.min(parts.length, mc) - 1;
+      } else {
+        curRow[curCol] += (curRow[curCol] ? '\n' : '') + parts[0].trim();
+        for (let i = 1; i < parts.length; i++) { curCol = Math.min(curCol + 1, mc - 1); curRow[curCol] += (curRow[curCol] ? '\n' : '') + parts[i].trim(); }
+      }
+    }
+    if (curRow !== null) parsed.push(curRow);
+    const norm = parsed.map(r => { while (r.length < mc) r.push(''); return r.map(c => c.trim()); });
+    C = norm[0];
+    R = norm.slice(1).map(row => row.map(cell => {
+      const lines2 = cell.split('\n').map(l => l.trim()).filter(Boolean);
+      const bulletRe = /^[•\-\*]\s+/;
+      if (lines2.length > 1 && lines2.every(l => bulletRe.test(l))) return lines2.map(l => ({ type: 'bullet', value: l.replace(bulletRe, '').trim() }));
+      return [{ type: 'text', value: lines2.join(' ') }];
+    }));
+    if (C.every(c => c === '')) { st.className = 'status err'; st.textContent = 'Første række ser ud til at være tom.'; return; }
+    genFromSegments();
+    document.getElementById('copy-section').classList.remove('copy-section-hidden');
+    resetBtn();
+  }
+
+  function genFromSegments() {
+    const cls = getcls();
     const mobileLabels = C.slice(1).map((c, i) =>
       `    .${cls} td:nth-of-type(${i + 2})::before { content: "${c.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"; }`
     ).join('\n');
 
     const css = `<style>
-  /* Desktop */
   .${cls} {
     width: 100%;
     border-collapse: collapse;
     font-family: Arial, sans-serif;
     font-size: var(--text-m);
     color: #000;
+    line-height: 1.4;
   }
   .${cls} th,
   .${cls} td {
@@ -304,7 +391,7 @@
     vertical-align: top;
   }
   .${cls} thead th {
-    font-weight: 700;
+    font-weight: 700 !important;
     background-color: #2a2a2a;
     color: #fff;
   }
@@ -312,8 +399,9 @@
   .${cls} tbody tr:nth-child(even) td { background-color: #f8f8f8; }
   .${cls} a { color: #000; text-decoration: underline; font-weight: bold; }
   .${cls} a:hover { text-decoration: none; }
-
-  /* Mobil – kortvisning */
+  .${cls} ul { margin: 0; padding: 0 0 0 1.2em; }
+  .${cls} ul li { margin: 0 0 4px 0; padding: 0; }
+  .${cls} ul li:last-child { margin-bottom: 0; }
   @media (max-width: 768px) {
     .${cls} thead { display: none; }
     .${cls},
@@ -352,9 +440,12 @@ ${mobileLabels}
   }
 </style>`;
 
-    const ths = C.map(c => `      <th scope="col">${e(c)}</th>`).join('\n');
-    const trs = R.map(r =>
-      `    <tr>\n${r.map((c, i) => i === 0 ? `      <td scope="row">${e(c)}</td>` : `      <td>${e(c)}</td>`).join('\n')}\n    </tr>`
+    const ths = C.map(c => `      <th scope="col">${esc(c)}</th>`).join('\n');
+    const trs = R.map(row =>
+      `    <tr>\n${row.map((segs, i) => {
+        const inner = renderSegs(segs);
+        return i === 0 ? `      <td scope="row">${inner}</td>` : `      <td>${inner}</td>`;
+      }).join('\n')}\n    </tr>`
     ).join('\n');
 
     const tbl = `<table class="${cls}">
@@ -368,43 +459,53 @@ ${trs}
   </tbody>
 </table>`;
 
-    document.getElementById('code').textContent = css + '\n' + tbl;
+    const html = css + '\n' + tbl;
+    document.getElementById('code').textContent = html;
+    document.getElementById('preview-content').innerHTML = html;
   }
 
-  function e(s) {
-    return s
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+  function renderSegs(segs) {
+    if (!segs || segs.length === 0) return '';
+    const bullets = segs.filter(s => s.type === 'bullet');
+    const texts = segs.filter(s => s.type === 'text');
+    if (bullets.length > 0 && texts.length === 0) {
+      const items = bullets.map(s => `<li>${linkify(esc(s.value))}</li>`).join('\n        ');
+      return `<ul>\n        ${items}\n      </ul>`;
+    }
+    return segs.map(s => s.type === 'bullet' ? `• ${linkify(esc(s.value))}` : linkify(esc(s.value))).join(' ').trim();
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function linkify(s) {
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    s = s.replace(/(?<!href=")(https?:\/\/[^\s<"]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    return s;
   }
 
   function doCopy() {
     const text = document.getElementById('code').textContent;
     const b = document.getElementById('copybtn');
-
-    // Primary: clipboard API
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => {
-        showCopied(b);
-      }).catch(() => {
-        fallbackCopy(b);
-      });
-    } else {
-      fallbackCopy(b);
-    }
+      navigator.clipboard.writeText(text).then(() => showCopied(b)).catch(() => fallbackCopy(b));
+    } else { fallbackCopy(b); }
   }
 
-  // Fallback: select text in the output box so user can Ctrl+C
   function fallbackCopy(b) {
-    const box = document.getElementById('code');
-    const sel = window.getSelection();
-    const range = document.createRange();
-    range.selectNodeContents(box);
-    sel.removeAllRanges();
-    sel.addRange(range);
-    b.innerHTML = '<i class="ti ti-hand-finger"></i> Markeret – tryk Ctrl+C';
-    b.classList.add('ok');
-    setTimeout(resetBtn, 3000);
+    // Create a visible temp textarea for selection
+    const ta = document.createElement('textarea');
+    ta.value = document.getElementById('code').textContent;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); showCopied(b); } catch(e) {
+      b.innerHTML = '<i class="ti ti-hand-finger"></i> Markeret – tryk Ctrl+C';
+      b.classList.add('ok');
+      setTimeout(resetBtn, 3000);
+    }
+    document.body.removeChild(ta);
   }
 
   function showCopied(b) {
@@ -415,6 +516,7 @@ ${trs}
 
   function resetBtn() {
     const b = document.getElementById('copybtn');
+    if (!b) return;
     b.classList.remove('ok');
     b.innerHTML = '<i class="ti ti-copy"></i> Kopiér HTML-kode';
   }
